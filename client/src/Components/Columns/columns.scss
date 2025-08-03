@@ -1,0 +1,28 @@
+.Columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    height: 100%;
+
+    .Column {
+        background-color: rgba(204, 204, 204, 0.319);
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 4px;
+
+        .Column-header {
+            padding: 0 12px 0;
+            border-bottom: 1px solid rgba(212, 212, 212, 0.482);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .Column-header-count {
+                background-color: rgba(255, 255, 255, 0.5);
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+        }
+    }
+}
