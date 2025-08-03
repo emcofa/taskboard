@@ -3,7 +3,7 @@ import { db } from '../db';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req: any, res: any) => {
   db.query('SELECT * FROM tasks', (err, results) => {
     if (err) {
       console.error(err);

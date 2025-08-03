@@ -1,9 +1,9 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
-  "include": ["src/**/*"],
+  "include": ["api/src/**/*"],
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",
+    "rootDir": "api/src",
     "outDir": "./dist",
 
     // Environment Settings
