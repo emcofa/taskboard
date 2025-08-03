@@ -1,2 +1,2 @@
 # taskboard
-A simple tasboard to manage your tasks
+A simple taskboard to manage your tasks
