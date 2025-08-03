@@ -3,6 +3,8 @@ $card-border: rgba(175, 175, 175, 0.48);
 $card-shadow: rgba(0, 0, 0, 0.1);
 $card-padding: 16px;
 $card-margin-top: 12px;
+$spacing: 4px;
+
 
 .Cards {
     padding: $card-padding;
@@ -20,5 +22,11 @@ $card-margin-top: 12px;
         &:hover {
             box-shadow: none;
         }
+    }
+
+    .due-date-container {
+        display: flex;
+        align-items: center;
+        gap: $spacing;
     }
 }

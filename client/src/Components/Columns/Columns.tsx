@@ -20,12 +20,12 @@ export const tasks = [
     description: 'Skapa grundläggande skisser för appens användargränssnitt.',
     columnId: 1,
     created: '2025-08-01T10:00:00Z',
-    dueDate: '2025-08-10T17:00:00Z',
+    dueDate: null,
   },
   {
     id: 2,
     title: 'Research user needs',
-    description: 'Genomför intervjuer och samla in feedback från användare.',
+    description: undefined,
     columnId: 1,
     created: '2025-08-02T11:00:00Z',
     dueDate: '2025-08-12T16:00:00Z',
@@ -44,12 +44,12 @@ export const tasks = [
     description: 'Bygg frontend och backend för användarinloggning.',
     columnId: 3,
     created: '2025-08-04T14:45:00Z',
-    dueDate: '2025-08-15T12:00:00Z',
+    dueDate: '2025-08-04T12:00:00Z',
   },
   {
     id: 5,
     title: 'Write unit tests',
-    description: 'Skriv tester för att säkerställa kodens kvalitet och funktionalitet.',
+    description: 'Skriv tester för att säkerställa kodens kvalitet och funktionalitet.Skriv tester för att säkerställa kodens kvalitet och funktionalitet. Skriv tester för att säkerställa kodens kvalitet och funktionalitet.',
     columnId: 4,
     created: '2025-08-05T08:20:00Z',
     dueDate: '2025-08-18T10:00:00Z',
@@ -80,7 +80,12 @@ const Columns = () => {
             <h3 className='Column-header-button'><FontAwesomeIcon icon={faPlus} /></h3>
           </div>
           <Cards columnId={column.id} tasks={tasks} />
-
+          <div className='New-task-button' onClick={() => {
+            console.log('Adding new task')
+          }}>
+            <FontAwesomeIcon color='grey' icon={faPlus} style={{ marginLeft: '16px' }} />
+            <p>New task</p>
+          </div>
         </div>
       ))}
     </div>

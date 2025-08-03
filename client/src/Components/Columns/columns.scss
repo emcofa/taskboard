@@ -2,49 +2,64 @@ $bg-column: rgba(204, 204, 204, 0.32);
 $border-color: rgba(212, 212, 212, 0.48);
 $count-bg: rgba(255, 255, 255, 0.5);
 $text-color: rgba(0, 0, 0, 0.8);
+$spacing: 4px;
+
+%flex-center {
+  display: flex;
+  align-items: center;
+}
+
+%flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .Columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  height: 100%;
+
+  .Column {
+    background-color: $bg-column;
+    flex: 1;
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    height: 100%;
+    flex-direction: column;
+    border-radius: 4px;
 
-    .Column {
-        background-color: $bg-column;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        border-radius: 4px;
+    .Column-header {
+      padding: 0 12px;
+      border-bottom: 1px solid $border-color;
+      @extend %flex-between;
 
-        .Column-header {
-            padding: 0 12px;
-            border-bottom: 1px solid $border-color;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+      .Title-count {
+        @extend %flex-center;
+        gap: 10px;
 
-            .Title-count {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-
-                .Column-header-count {
-                    background-color: $count-bg;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    color: $text-color;
-                }
-
-                .Column-header-button {
-                    cursor: pointer;
-                    color: $text-color;
-                    transition: color 0.2s ease;
-
-                    &:hover {
-                        color: darken($text-color, 20%);
-                    }
-                }
-            }
+        .Column-header-count {
+          background-color: $count-bg;
+          padding: 4px 8px;
+          border-radius: 4px;
+          color: $text-color;
         }
+
+        .Column-header-button {
+          cursor: pointer;
+          color: $text-color;
+          transition: color 0.2s ease;
+          &:hover {
+            color: darken($text-color, 20%);
+          }
+        }
+      }
     }
+
+    .New-task-button {
+      @extend %flex-center;
+      gap: 10px;
+      color: $text-color;
+      cursor: pointer;
+    }
+  }
 }
