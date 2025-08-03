@@ -1,3 +1,8 @@
+$bg-column: rgba(204, 204, 204, 0.32);
+$border-color: rgba(212, 212, 212, 0.48);
+$count-bg: rgba(255, 255, 255, 0.5);
+$text-color: rgba(0, 0, 0, 0.8);
+
 .Columns {
     display: flex;
     justify-content: space-between;
@@ -5,23 +10,40 @@
     height: 100%;
 
     .Column {
-        background-color: rgba(204, 204, 204, 0.319);
-        width: 100%;
+        background-color: $bg-column;
+        flex: 1;
         display: flex;
         flex-direction: column;
         border-radius: 4px;
 
         .Column-header {
-            padding: 0 12px 0;
-            border-bottom: 1px solid rgba(212, 212, 212, 0.482);
+            padding: 0 12px;
+            border-bottom: 1px solid $border-color;
             display: flex;
             justify-content: space-between;
             align-items: center;
 
-            .Column-header-count {
-                background-color: rgba(255, 255, 255, 0.5);
-                padding: 4px 8px;
-                border-radius: 4px;
+            .Title-count {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                .Column-header-count {
+                    background-color: $count-bg;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    color: $text-color;
+                }
+
+                .Column-header-button {
+                    cursor: pointer;
+                    color: $text-color;
+                    transition: color 0.2s ease;
+
+                    &:hover {
+                        color: darken($text-color, 20%);
+                    }
+                }
             }
         }
     }

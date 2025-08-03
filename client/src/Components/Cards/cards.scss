@@ -1,18 +1,24 @@
+$card-bg: #fff;
+$card-border: rgba(175, 175, 175, 0.48);
+$card-shadow: rgba(0, 0, 0, 0.1);
+$card-padding: 16px;
+$card-margin-top: 12px;
+
 .Cards {
-    padding: 16px;
+    padding: $card-padding;
 
     .Card {
-        background-color: rgb(255, 255, 255);
+        background-color: $card-bg;
         border-radius: 4px;
-        border: 1px solid rgba(175, 175, 175, 0.482);
-        transition: all 0.3s ease;
-        padding-left: 16px;
-        margin-top: 12px;
+        border: 1px solid $card-border;
+        padding-left: $card-padding;
+        margin-top: $card-margin-top;
         cursor: pointer;
-        transition: all 0.3s ease;
+        box-shadow: 0 0 10px 0 $card-shadow;
+        transition: box-shadow 0.3s ease, background-color 0.3s ease;
+
         &:hover {
-            background-color: rgba(211, 211, 211, 0.319);
+            box-shadow: none;
         }
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     }
 }
