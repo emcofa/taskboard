@@ -1,76 +1,64 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './columns.scss'
 import Cards from '../Cards/Cards'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-
-// Remove this when backend is implemented task_columns
-const taskColumns = [
-  { id: 1, name: 'Backlog', position: 1, description: 'Tasks not started yet' },
-  { id: 2, name: 'To Do', position: 2, description: 'Tasks ready to start' },
-  { id: 3, name: 'In Progress', position: 3, description: 'Tasks being worked on' },
-  { id: 4, name: 'Done', position: 4, description: 'Completed tasks' },
-];
-
-// Remove this when backend is implemented tasks
-export const tasks = [
-  {
-    id: 1,
-    title: 'Design wireframes',
-    description: 'Skapa grundläggande skisser för appens användargränssnitt.',
-    columnId: 1,
-    created: '2025-08-01T10:00:00Z',
-    dueDate: null,
-  },
-  {
-    id: 2,
-    title: 'Research user needs',
-    description: undefined,
-    columnId: 1,
-    created: '2025-08-02T11:00:00Z',
-    dueDate: '2025-08-12T16:00:00Z',
-  },
-  {
-    id: 3,
-    title: 'Setup project repository',
-    description: 'Initiera Git-repo och konfigurera grundläggande struktur.',
-    columnId: 2,
-    created: '2025-08-03T09:30:00Z',
-    dueDate: '2025-08-08T18:00:00Z',
-  },
-  {
-    id: 4,
-    title: 'Implement login flow',
-    description: 'Bygg frontend och backend för användarinloggning.',
-    columnId: 3,
-    created: '2025-08-04T14:45:00Z',
-    dueDate: '2025-08-04T12:00:00Z',
-  },
-  {
-    id: 5,
-    title: 'Write unit tests',
-    description: 'Skriv tester för att säkerställa kodens kvalitet och funktionalitet.Skriv tester för att säkerställa kodens kvalitet och funktionalitet. Skriv tester för att säkerställa kodens kvalitet och funktionalitet.',
-    columnId: 4,
-    created: '2025-08-05T08:20:00Z',
-    dueDate: '2025-08-18T10:00:00Z',
-  },
-  {
-    id: 6,
-    title: 'Deploy to staging',
-    description: 'Sätt upp staging-miljö för testning av nya funktioner.',
-    columnId: 4,
-    created: '2025-08-06T13:15:00Z',
-    dueDate: '2025-08-20T15:00:00Z',
-  },
-];
-
+import { Task, TaskColumn } from '../../resources/types';
+import { fetchColumnsAndTasks } from '../../resources/api';
 
 const headerColors = ['#F3C5C5', '#FADFC1', '#D5D2FD', '#BFF0DB', '#B1CBE8', '#F2F2D0'];
 
-const Columns = () => {
+const Columns = ({ setShowModalId }: { setShowModalId: (showModalId: number | null) => void }) => {
+  const [columns, setColumns] = useState<TaskColumn[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const { columns: columnsData, tasks: tasksData } = await fetchColumnsAndTasks();
+        
+        setColumns(columnsData);
+        setTasks(tasksData);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className='Columns'>
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <p>Loading columns and tasks...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='Columns'>
+        <div style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
+          <p>Error: {error}</p>
+          <p>Make sure your API server is running on port 3301</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='Columns'>
-      {taskColumns.map((column) => (
+      {columns.map((column) => (
         <div key={column.id} className='Column'>
           <div className='Column-header' style={{ backgroundColor: headerColors[column.id - 1] }}>
             <div className='Title-count'>
@@ -79,7 +67,7 @@ const Columns = () => {
             </div>
             <h3 className='Column-header-button'><FontAwesomeIcon icon={faPlus} /></h3>
           </div>
-          <Cards columnId={column.id} tasks={tasks} />
+          <Cards columnId={column.id} tasks={tasks} setShowModalId={setShowModalId} />
           <div className='New-task-button' onClick={() => {
             console.log('Adding new task')
           }}>

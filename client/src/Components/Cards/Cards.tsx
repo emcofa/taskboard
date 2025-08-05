@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './cards.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +15,7 @@ type Task = {
 type Props = {
   columnId: number;
   tasks: Task[];
+  setShowModalId: (showModalId: number | null) => void;
 };
 
 
@@ -38,8 +39,7 @@ const truncateText = (text: string, maxLength: number): string => {
 };
 
 
-const Cards = ({ columnId, tasks }: Props) => {
-
+const Cards = ({ columnId, tasks, setShowModalId }: Props) => {
   return (
     <div className='Cards'>
       {tasks
@@ -49,7 +49,9 @@ const Cards = ({ columnId, tasks }: Props) => {
           const showDue = task.dueDate !== null && columnId !== 4;
 
           return (
-            <div key={task.id} className='Card'>
+            <div key={task.id} className='Card' onClick={() => {
+              setShowModalId(task.id);
+            }}>
               <h3>{task.title}</h3>
 
               

@@ -48,9 +48,6 @@ $spacing: 4px;
           cursor: pointer;
           color: $text-color;
           transition: color 0.2s ease;
-          &:hover {
-            color: darken($text-color, 20%);
-          }
         }
       }
     }
