@@ -71,3 +71,38 @@ export const updateTask = async (taskId: number, updates: Partial<Task>): Promis
   }
   return response.json();
 };
+
+export const createTask = async (taskData: { title: string; description?: string; columnId: number; dueDate?: string }): Promise<Task> => {
+  const response = await fetch(`${API_BASE_URL}/task`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: taskData.title,
+      description: taskData.description || null,
+      column_id: taskData.columnId,
+      due_date: taskData.dueDate || null
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to create task: ${response.statusText}`);
+  }
+  return response.json();
+};
+
+export const moveTask = async (taskId: number, newColumnId: number): Promise<Task> => {
+  const response = await fetch(`${API_BASE_URL}/task/${taskId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      column_id: newColumnId
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to move task: ${response.statusText}`);
+  }
+  return response.json();
+};

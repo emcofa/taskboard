@@ -178,3 +178,28 @@
 .due-date-input {
   width: 100%;
 }
+
+.column-selector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--modal-padding-sm);
+}
+
+.column-selector-container label {
+  font-weight: 500;
+  color: var(--modal-text-secondary);
+  font-size: 14px;
+}
+
+.column-select-input {
+  width: 100%;
+  background-color: white;
+  cursor: pointer;
+}
+
+.column-select-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
