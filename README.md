@@ -13,7 +13,7 @@ A modern Kanban-style task management tool built with React, TypeScript, Node.js
 - **Due Date Tracking**: Set and track task deadlines
 - **Modern UI**: Clean, modern interface built with SCSS
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 - **React 19** with TypeScript
