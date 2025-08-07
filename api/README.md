@@ -1,32 +1,73 @@
 # Taskboard API
 
-A RESTful API for managing tasks and task columns in a Kanban-style taskboard.
+A RESTful API for managing tasks and task columns in a Kanban-style taskboard. Built with Node.js, Express, TypeScript, and MySQL.
 
-## Setup
+## Quick Setup
 
-1. Install dependencies:
+### Prerequisites
+- Node.js (v16 or higher)
+- MySQL (v8.0 or higher)
+
+### Installation
+
+1. **Install dependencies:**
 ```bash
 npm install
 ```
 
-2. Create a `.env` file in the root directory:
+2. **Set up the database:**
+```bash
+# Start MySQL and create the database
+mysql -u root -p < database.sql
+```
+
+3. **Create environment file:**
+```bash
+cp .env.example .env
+```
+
+4. **Configure environment variables:**
 ```env
 DB_HOST=localhost
+DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=your_password
+DB_PASSWORD=your_mysql_password
 DB_NAME=taskboard
 PORT=5000
 ```
 
-3. Start the development server:
+5. **Start the development server:**
 ```bash
 npm run dev
 ```
 
-## API Endpoints
+The API will be running at `http://localhost:5000`
 
-### Health Check
-- **GET** `/health` - Check if the API is running
+## 🔧 Development
+
+### Available Scripts
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build TypeScript to JavaScript
+- `npm start` - Start production server
+- `npm test` - Run tests (not implemented yet)
+
+### Project Structure
+```
+api/
+├── src/
+│   ├── routes/
+│   │   ├── tasks.ts          # Task-related endpoints
+│   │   └── taskColumns.ts    # Column-related endpoints
+│   ├── utils/
+│   │   └── toCamelCase.ts    # Utility functions
+│   ├── db.ts                 # Database connection
+│   └── server.ts             # Express server setup
+├── database.sql              # Database schema and sample data
+├── package.json
+└── tsconfig.json
+```
+
+## API Endpoints
 
 ### Tasks
 
@@ -121,7 +162,7 @@ npm run dev
 ### Task Table
 - `id` (INT, PRIMARY KEY, AUTO_INCREMENT)
 - `title` (VARCHAR(255), NOT NULL)
-- `column_id` (INT, NOT NULL, FOREIGN KEY)
+- `column_position` (INT, NOT NULL, FOREIGN KEY)
 - `task_position` (INT, NOT NULL, DEFAULT 1)
 - `created` (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
 - `due_date` (DATETIME, NULL)
@@ -130,11 +171,17 @@ npm run dev
 ### Task Column Table
 - `id` (INT, PRIMARY KEY, AUTO_INCREMENT)
 - `name` (VARCHAR(50), NOT NULL)
-- `position` (INT, NOT NULL)
+- `position` (INT, NOT NULL, UNIQUE)
 - `description` (TEXT, NULL)
 - `created` (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
 
-## Error Responses
+## Sample Data
+
+The `database.sql` file includes:
+- Default columns: Backlog, To Do, In Progress, Done, Archive
+- Sample tasks to get you started
+
+## Error Handling
 
 All endpoints return consistent error responses:
 
@@ -149,4 +196,5 @@ Common HTTP status codes:
 - `201` - Created
 - `400` - Bad Request
 - `404` - Not Found
-- `500` - Internal Server Error 
+- `500` - Internal Server Error
+
