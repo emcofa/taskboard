@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import './taskModal.scss'
 import { fetchTask, deleteTask, updateTask } from '../resources/api';
-import { Task } from '../resources/types';
+import { Task, TaskColumn } from '../resources/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX, faPenToSquare, faTrash, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from 'react-tooltip';
 
 interface TaskModalProps {
     taskId: number;
+    columns: TaskColumn[];
     onClose: () => void;
     onDelete?: () => void;
     onUpdate?: () => void;
 }
 
-const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
+const TaskModal = ({ taskId, columns, onClose, onDelete, onUpdate }: TaskModalProps) => {
     const handleBackdropClick = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
             onClose();
@@ -26,7 +28,8 @@ const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
     const [editForm, setEditForm] = useState({
         title: '',
         description: '',
-        dueDate: ''
+        dueDate: '',
+        columnPosition: 0
     });
 
     useEffect(() => {
@@ -36,7 +39,8 @@ const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
             setEditForm({
                 title: taskData.title,
                 description: taskData.description || '',
-                dueDate: taskData.dueDate || ''
+                dueDate: taskData.dueDate || '',
+                columnPosition: taskData.columnPosition
             });
         }
         fetchTaskData();
@@ -44,18 +48,18 @@ const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
 
     const handleDelete = async () => {
         if (!task) return;
-        
+
         const confirmed = window.confirm(`Are you sure you want to delete "${task.title}"?`);
         if (!confirmed) return;
 
         try {
             setIsDeleting(true);
             await deleteTask(taskId);
-            
+
             if (onDelete) {
                 onDelete();
             }
-            
+
             onClose();
         } catch (error) {
             console.error('Failed to delete task:', error);
@@ -77,12 +81,13 @@ const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
             const updatedTask = await updateTask(taskId, {
                 title: editForm.title,
                 description: editForm.description,
-                dueDate: editForm.dueDate || null
+                dueDate: editForm.dueDate || null,
+                columnPosition: editForm.columnPosition
             });
-            
+
             setTask(updatedTask);
             setIsEditing(false);
-            
+
             if (onUpdate) {
                 onUpdate();
             }
@@ -99,13 +104,14 @@ const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
             setEditForm({
                 title: task.title,
                 description: task.description || '',
-                dueDate: task.dueDate || ''
+                dueDate: task.dueDate || '',
+                columnPosition: task.columnPosition
             });
         }
         setIsEditing(false);
     }
 
-    const handleInputChange = (field: string, value: string) => {
+    const handleInputChange = (field: string, value: string | number) => {
         setEditForm(prev => ({
             ...prev,
             [field]: value
@@ -124,31 +130,40 @@ const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
                     <div className="modal-header-buttons">
                         {!isEditing ? (
                             <>
-                                <button className="close-button" onClick={handleEdit}>
+                                <button className="close-button" onClick={handleEdit} data-tooltip-id='edit-tooltip' data-tooltip-content='Edit'>
                                     <FontAwesomeIcon size='sm' icon={faPenToSquare} />
+                                    <Tooltip id='edit-tooltip' place='top' />
                                 </button>
-                                <button 
-                                    className="close-button" 
+                                <button
+                                    className="close-button"
                                     onClick={handleDelete}
                                     disabled={isDeleting}
+                                    data-tooltip-id='delete-tooltip'
+                                    data-tooltip-content='Delete'
                                 >
                                     <FontAwesomeIcon size='sm' icon={faTrash} />
+                                    <Tooltip id='delete-tooltip' place='top' />
                                 </button>
-                                <button className="close-button" onClick={onClose}>
+                                <button className="close-button" onClick={onClose} data-tooltip-id='close-tooltip' data-tooltip-content='Close'>
                                     <FontAwesomeIcon size='sm' icon={faX} />
+                                    <Tooltip id='close-tooltip' place='top' />
                                 </button>
                             </>
                         ) : (
                             <>
-                                <button 
-                                    className="close-button" 
+                                <button
+                                    className="close-button"
                                     onClick={handleSave}
                                     disabled={isUpdating}
+                                    data-tooltip-id='save-tooltip'
+                                    data-tooltip-content='Save'
                                 >
                                     <FontAwesomeIcon size='sm' icon={faSave} />
+                                    <Tooltip id='save-tooltip' place='top' />
                                 </button>
-                                <button className="close-button" onClick={handleCancel}>
+                                <button className="close-button" onClick={handleCancel} data-tooltip-id='cancel-tooltip' data-tooltip-content='Cancel'>
                                     <FontAwesomeIcon size='sm' icon={faTimes} />
+                                    <Tooltip id='cancel-tooltip' place='top' />
                                 </button>
                             </>
                         )}
@@ -165,19 +180,37 @@ const TaskModal = ({ taskId, onClose, onDelete, onUpdate }: TaskModalProps) => {
                                 placeholder="Task title"
                             />
                         ) : (
-                            <h3>{task.title}</h3>
+                            <b> {task.title}</b>
                         )}
                     </div>
                     <div className="modal-body-content">
                         {isEditing ? (
                             <>
-                                <textarea
-                                    value={editForm.description}
-                                    onChange={(e) => handleInputChange('description', e.target.value)}
-                                    className="edit-input description-input"
-                                    placeholder="Task description"
-                                    rows={4}
-                                />
+                                <div className="column-selector-container">
+                                    <label htmlFor="columnSelect">Status</label>
+                                    <select
+                                        id="columnSelect"
+                                        value={editForm.columnPosition}
+                                        onChange={(e) => handleInputChange('columnPosition', parseInt(e.target.value))}
+                                        className="edit-input column-select-input"
+                                    >
+                                        {columns.map((column) => (
+                                            <option key={column.id} value={column.position}>
+                                                {column.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="column-selector-container">
+                                    <label htmlFor="description">Description</label>
+                                    <textarea
+                                        value={editForm.description}
+                                        onChange={(e) => handleInputChange('description', e.target.value)}
+                                        className="edit-input description-input"
+                                        placeholder="Task description"
+                                        rows={4}
+                                    />
+                                </div>
                                 <div className="due-date-input-container">
                                     <label htmlFor="dueDate">Due Date:</label>
                                     <input

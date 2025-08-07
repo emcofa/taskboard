@@ -27,10 +27,16 @@ $spacing: 4px;
     display: flex;
     flex-direction: column;
     border-radius: 4px;
+    transition: background-color 0.2s ease;
+    
+    &[data-droppable="true"] {
+      background-color: rgba(204, 204, 204, 0.4);
+    }
 
     .Column-header {
       padding: 0 12px;
       border-bottom: 1px solid $border-color;
+      border-radius: 4px 4px 0 0;
       @extend %flex-between;
 
       .Title-count {
@@ -49,30 +55,42 @@ $spacing: 4px;
         }
       }
 
-      .Column-header-button {
-        cursor: pointer;
-        color: $text-color;
-        transition: all 0.2s ease;
-        padding: 8px;
-        border-radius: 4px;
-        margin: 0;
+      .Column-header-buttons {
+        display: flex;
+        align-items: center;
 
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.2);
-          transform: scale(1.1);
+        p {
+          cursor: pointer;
+          color: $text-color;
+          transition: all 0.2s ease;
+          margin: 0;
+          font-size: small;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
 
-        &:active {
-          transform: scale(0.95);
+        .Column-header-button {
+          cursor: pointer;
+          color: $text-color;
+          transition: all 0.2s ease;
+          padding: 8px;
+          border-radius: 4px;
+          margin: 0;
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+          }
+
+          &:active {
+            transform: scale(0.95);
+          }
         }
       }
     }
 
-    .New-task-button {
-      @extend %flex-center;
-      gap: 10px;
-      color: $text-color;
-      cursor: pointer;
-    }
+
   }
 }

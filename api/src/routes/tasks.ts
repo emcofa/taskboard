@@ -8,9 +8,19 @@ const router = express.Router();
 // Helper function to convert Date objects to ISO strings in task objects
 const convertTaskDates = (task: any) => {
   if (task.dueDate instanceof Date) {
-    task.dueDate = task.dueDate.toISOString().split('T')[0]; // Convert to YYYY-MM-DD format
+    task.dueDate = task.dueDate.toISOString().split('T')[0];
   }
   return task;
+};
+
+// Helper function to convert frontend date format (YYYY-MM-DD) to MySQL datetime format
+const convertFrontendDateToMySQL = (dateString: string | null): string | null => {
+  if (!dateString) return null;
+  // If the date is already in YYYY-MM-DD format, convert it to MySQL datetime format
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return `${dateString} 00:00:00`;
+  }
+  return dateString;
 };
 
 // GET all tasks
@@ -26,12 +36,12 @@ router.get('/', async (req: any, res: any) => {
   }
 });
 
-// GET tasks by column
-router.get('/column/:columnId', async (req: any, res: any) => {
+// GET tasks by column position
+router.get('/column/:columnPosition', async (req: any, res: any) => {
   try {
     const [tasks] = await db.promise().query<RowDataPacket[]>(
-      'SELECT * FROM task WHERE column_id = ? ORDER BY task_position ASC, created DESC',
-      [req.params.columnId]
+      'SELECT * FROM task WHERE column_position = ? ORDER BY task_position ASC, created DESC',
+      [req.params.columnPosition]
     );
     const camelCaseTasks = toCamelCase(tasks);
     const tasksWithConvertedDates = camelCaseTasks.map(convertTaskDates);
@@ -61,15 +71,15 @@ router.get('/:id', async (req: any, res: any) => {
 // POST create new task
 router.post('/', async (req: any, res: any) => {
   try {
-    const { title, description, column_id, task_position, due_date } = req.body;
+    const { title, description, column_position, task_position, due_date } = req.body;
     
-    if (!title || !column_id) {
-      return res.status(400).json({ error: 'Title and column_id are required' });
+    if (!title || !column_position) {
+      return res.status(400).json({ error: 'Title and column_position are required' });
     }
 
     const [result] = await db.promise().query<ResultSetHeader>(
-      'INSERT INTO task (title, description, column_id, task_position, due_date) VALUES (?, ?, ?, ?, ?)',
-      [title, description || null, column_id, task_position || 1, due_date || null]
+      'INSERT INTO task (title, description, column_position, task_position, due_date) VALUES (?, ?, ?, ?, ?)',
+      [title, description || null, column_position, task_position || 1, convertFrontendDateToMySQL(due_date)]
     );
 
     const [newTask] = await db.promise().query<RowDataPacket[]>('SELECT * FROM task WHERE id = ?', [result.insertId]);
@@ -85,7 +95,7 @@ router.post('/', async (req: any, res: any) => {
 // PUT update task
 router.put('/:id', async (req: any, res: any) => {
   try {
-    const { title, description, column_id, task_position, due_date } = req.body;
+    const { title, description, column_position, task_position, due_date } = req.body;
     
     const [existingTask] = await db.promise().query<RowDataPacket[]>('SELECT * FROM task WHERE id = ?', [req.params.id]);
     if (existingTask.length === 0) {
@@ -93,13 +103,13 @@ router.put('/:id', async (req: any, res: any) => {
     }
 
     await db.promise().query(
-      'UPDATE task SET title = ?, description = ?, column_id = ?, task_position = ?, due_date = ? WHERE id = ?',
+      'UPDATE task SET title = ?, description = ?, column_position = ?, task_position = ?, due_date = ? WHERE id = ?',
       [
         title || existingTask[0]?.title,
         description !== undefined ? description : existingTask[0]?.description,
-        column_id || existingTask[0]?.column_id,
+        column_position || existingTask[0]?.column_position,
         task_position !== undefined ? task_position : existingTask[0]?.task_position,
-        due_date !== undefined ? due_date : existingTask[0]?.due_date,
+        convertFrontendDateToMySQL(due_date !== undefined ? due_date : existingTask[0]?.due_date),
         req.params.id
       ]
     );

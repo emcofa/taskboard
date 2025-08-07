@@ -6,13 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface AddTaskModalProps {
-    columnId: number;
+    columnPosition: number;
     columns: TaskColumn[];
     onClose: () => void;
     onTaskCreated?: () => void;
 }
 
-const AddTaskModal = ({ columnId, columns, onClose, onTaskCreated }: AddTaskModalProps) => {
+const AddTaskModal = ({ columnPosition, columns, onClose, onTaskCreated }: AddTaskModalProps) => {
     const handleBackdropClick = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
             onClose();
@@ -24,7 +24,7 @@ const AddTaskModal = ({ columnId, columns, onClose, onTaskCreated }: AddTaskModa
         title: '',
         description: '',
         dueDate: '',
-        columnId: columnId
+        columnPosition: columnPosition
     });
 
     const handleSave = async () => {
@@ -38,7 +38,7 @@ const AddTaskModal = ({ columnId, columns, onClose, onTaskCreated }: AddTaskModa
             await createTask({
                 title: formData.title.trim(),
                 description: formData.description.trim() || undefined,
-                columnId: formData.columnId,
+                columnPosition: formData.columnPosition,
                 dueDate: formData.dueDate || undefined
             });
             
@@ -100,12 +100,12 @@ const AddTaskModal = ({ columnId, columns, onClose, onTaskCreated }: AddTaskModa
                             <label htmlFor="columnSelect">Column:</label>
                             <select
                                 id="columnSelect"
-                                value={formData.columnId}
-                                onChange={(e) => handleInputChange('columnId', parseInt(e.target.value))}
+                                value={formData.columnPosition}
+                                onChange={(e) => handleInputChange('columnPosition', parseInt(e.target.value))}
                                 className="edit-input column-select-input"
                             >
                                 {columns.map((column) => (
-                                    <option key={column.id} value={column.id}>
+                                    <option key={column.id} value={column.position}>
                                         {column.name}
                                     </option>
                                 ))}

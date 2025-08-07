@@ -17,11 +17,11 @@ export const fetchTasks = async (): Promise<Task[]> => {
   }
   const tasksData = await response.json();
   
-  return tasksData.map((task: any) => ({
+  return tasksData.map((task: Task) => ({
     id: task.id,
     title: task.title,
     description: task.description,
-    columnId: task.columnId,
+    columnPosition: task.columnPosition,
     created: task.created,
     dueDate: task.dueDate
   }));
@@ -59,12 +59,24 @@ export const deleteTask = async (taskId: number): Promise<void> => {
 };
 
 export const updateTask = async (taskId: number, updates: Partial<Task>): Promise<Task> => {
+  // Convert camelCase to snake_case for backend compatibility
+  const backendUpdates: {
+    title?: string;
+    description?: string;
+    column_position?: number;
+    due_date?: string | null;
+  } = {};
+  if (updates.title !== undefined) backendUpdates.title = updates.title;
+  if (updates.description !== undefined) backendUpdates.description = updates.description;
+  if (updates.columnPosition !== undefined) backendUpdates.column_position = updates.columnPosition;
+  if (updates.dueDate !== undefined) backendUpdates.due_date = updates.dueDate;
+
   const response = await fetch(`${API_BASE_URL}/task/${taskId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(updates),
+    body: JSON.stringify(backendUpdates),
   });
   if (!response.ok) {
     throw new Error(`Failed to update task: ${response.statusText}`);
@@ -72,7 +84,7 @@ export const updateTask = async (taskId: number, updates: Partial<Task>): Promis
   return response.json();
 };
 
-export const createTask = async (taskData: { title: string; description?: string; columnId: number; dueDate?: string }): Promise<Task> => {
+export const createTask = async (taskData: { title: string; description?: string; columnPosition: number; dueDate?: string }): Promise<Task> => {
   const response = await fetch(`${API_BASE_URL}/task`, {
     method: 'POST',
     headers: {
@@ -81,7 +93,7 @@ export const createTask = async (taskData: { title: string; description?: string
     body: JSON.stringify({
       title: taskData.title,
       description: taskData.description || null,
-      column_id: taskData.columnId,
+      column_position: taskData.columnPosition,
       due_date: taskData.dueDate || null
     }),
   });
@@ -91,14 +103,14 @@ export const createTask = async (taskData: { title: string; description?: string
   return response.json();
 };
 
-export const moveTask = async (taskId: number, newColumnId: number): Promise<Task> => {
+export const moveTask = async (taskId: number, newColumnPosition: number): Promise<Task> => {
   const response = await fetch(`${API_BASE_URL}/task/${taskId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      column_id: newColumnId
+      column_position: newColumnPosition
     }),
   });
   if (!response.ok) {

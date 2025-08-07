@@ -123,6 +123,10 @@
 
 .modal-body {
   padding: var(--modal-padding-lg);
+
+  .modal-body-header {
+    margin-bottom: var(--modal-padding-sm);
+  }
 }
 
 .modal-body p {
@@ -131,7 +135,6 @@
   line-height: var(--modal-line-height);
 }
 
-// Edit input styles
 .edit-input {
   width: 100%;
   padding: 12px;

@@ -25,7 +25,7 @@ const Board = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 5,
       },
     })
   );
@@ -60,24 +60,20 @@ const Board = () => {
     if (!over) return;
 
     const taskId = parseInt(active.id as string);
-    const newColumnId = parseInt(over.id as string);
+    const newColumnPosition = parseInt(over.id as string);
 
-    // Check if the task is being moved to a different column
     const currentTask = tasks.find(t => t.id === taskId);
-    if (!currentTask || currentTask.columnId === newColumnId) return;
+    if (!currentTask || currentTask.columnPosition === newColumnPosition) return;
 
     try {
-      // Optimistically update the UI
       setTasks(prevTasks =>
         prevTasks.map(task =>
-          task.id === taskId ? { ...task, columnId: newColumnId } : task
+          task.id === taskId ? { ...task, columnPosition: newColumnPosition } : task
         )
       );
 
-      // Make the API call
-      await moveTask(taskId, newColumnId);
+      await moveTask(taskId, newColumnPosition);
       
-      // Refresh data to ensure consistency
       fetchData();
     } catch (error) {
       console.error('Failed to move task:', error);
@@ -125,6 +121,7 @@ const Board = () => {
           tasks={tasks}
           columns={columns}
           onTaskCreated={handleTaskCreated}
+          onTaskUpdated={handleTaskUpdate}
         />
         {showModalId ? (
           <TaskModal 

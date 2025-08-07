@@ -95,10 +95,10 @@ router.put('/:id', async (req: any, res: any) => {
 router.get('/tasks', async (req: any, res: any) => {
   try {
     const [tasks] = await db.promise().query<RowDataPacket[]>(`
-      SELECT t.id, t.title, t.description, t.column_id, t.task_position, t.due_date, t.created,
+      SELECT t.id, t.title, t.description, t.column_position, t.task_position, t.due_date, t.created,
              c.name as column_name, c.description as column_description
       FROM task t
-      JOIN task_column c ON t.column_id = c.id
+      JOIN task_column c ON t.column_position = c.position
       ORDER BY c.position ASC, t.task_position ASC, t.created DESC
     `);
     const camelCaseTasks = toCamelCase(tasks);
@@ -118,7 +118,7 @@ router.delete('/:id', async (req: any, res: any) => {
     }
 
     // Check if there are tasks in this column
-    const [tasksInColumn] = await db.promise().query<RowDataPacket[]>('SELECT COUNT(*) as count FROM task WHERE column_id = ?', [req.params.id]);
+    const [tasksInColumn] = await db.promise().query<RowDataPacket[]>('SELECT COUNT(*) as count FROM task WHERE column_position = ?', [existingColumn[0]?.position]);
     if (tasksInColumn[0]?.count > 0) {
       return res.status(400).json({ error: 'Cannot delete column with existing tasks' });
     }
@@ -131,16 +131,23 @@ router.delete('/:id', async (req: any, res: any) => {
   }
 });
 
-// GET tasks by column ID
+// GET tasks by column position
 router.get('/:id/tasks', async (req: any, res: any) => {
   try {
+    const [columns] = await db.promise().query<RowDataPacket[]>('SELECT * FROM task_column WHERE id = ?', [req.params.id]);
+    if (columns.length === 0) {
+      return res.status(404).json({ error: 'Task column not found' });
+    }
+    
+    const columnPosition = columns[0]?.position;
+    
     const [tasks] = await db.promise().query<RowDataPacket[]>(`
       SELECT t.*, c.name as column_name, c.description as column_description
       FROM task t
-      JOIN task_column c ON t.column_id = c.id
-      WHERE t.column_id = ?
+      JOIN task_column c ON t.column_position = c.position
+      WHERE t.column_position = ?
       ORDER BY t.task_position ASC, t.created DESC
-    `, [req.params.id]);
+    `, [columnPosition]);
     const camelCaseTasks = toCamelCase(tasks);
     res.json(camelCaseTasks);
   } catch (err) {

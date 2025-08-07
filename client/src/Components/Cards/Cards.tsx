@@ -1,24 +1,27 @@
 import React from 'react'
 import './cards.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDays } from '@fortawesome/free-solid-svg-icons';
-import { useDroppable } from '@dnd-kit/core';
+import { faCalendarDays, faBoxArchive } from '@fortawesome/free-solid-svg-icons';
 import { CSS } from '@dnd-kit/utilities';
-import { useSortable } from '@dnd-kit/sortable';
+import { useDraggable } from '@dnd-kit/core';
+import { Tooltip } from 'react-tooltip'
+import { updateTask } from '../../resources/api';
+
 
 type Task = {
   id: number;
   title: string;
   description?: string;
-  columnId: number;
+  columnPosition: number;
   created: string;
   dueDate?: string | null;
 }
 
 type Props = {
-  columnId: number;
+  columnPosition: number;
   tasks: Task[];
   setShowModalId: (showModalId: number | null) => void;
+  onTaskUpdated?: () => void;
 };
 
 const calculateDaysLeft = (dueDate?: string | null): number => {
@@ -40,25 +43,23 @@ const truncateText = (text: string, maxLength: number): string => {
   return text.substring(0, maxLength) + '...';
 };
 
-// Draggable Card Component
-const DraggableCard = ({ task, setShowModalId }: { task: Task; setShowModalId: (showModalId: number | null) => void }) => {
+const DraggableCard = ({ task, setShowModalId, onTaskUpdated }: { task: Task; setShowModalId: (showModalId: number | null) => void; onTaskUpdated?: () => void }) => {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
-    transition,
     isDragging,
-  } = useSortable({ id: task.id.toString() });
+  } = useDraggable({ id: task.id.toString() });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0 : 1,
   };
 
   const daysLeft = calculateDaysLeft(task.dueDate);
-  const showDue = task.dueDate !== null && task.columnId !== 4;
+  const showDue = task.dueDate !== null && task.columnPosition !== 4;
+  const isDoneTask = task.columnPosition === 4;
 
   return (
     <div
@@ -69,7 +70,24 @@ const DraggableCard = ({ task, setShowModalId }: { task: Task; setShowModalId: (
       className='Card'
       onClick={() => setShowModalId(task.id)}
     >
-      <h3>{task.title}</h3>
+      <div className='Card-header'>
+        <h3>{task.title}</h3>
+        {isDoneTask ?
+          <div>
+            <FontAwesomeIcon icon={faBoxArchive} color='grey' size='sm' data-tooltip-id='archive-tooltip' className='archive-icon' onClick={async (e) => {
+              e.stopPropagation();
+              try {
+                await updateTask(task.id, { columnPosition: 5 });
+                onTaskUpdated?.();
+              } catch (error) {
+                console.error('Failed to archive task:', error);
+              }
+            }}
+              data-tooltip-content='Archive task' />
+            <Tooltip id='archive-tooltip' place='top' />
+          </div>
+          : null}
+      </div>
       <p>{truncateText(task.description || '', 100)}</p>
       {showDue ? (
         <div className='due-date-container'>
@@ -83,17 +101,13 @@ const DraggableCard = ({ task, setShowModalId }: { task: Task; setShowModalId: (
   );
 };
 
-const Cards = ({ columnId, tasks, setShowModalId }: Props) => {
-  const { setNodeRef } = useDroppable({
-    id: columnId.toString(),
-  });
-
-  const columnTasks = tasks.filter(task => task.columnId === columnId);
+const Cards = ({ columnPosition, tasks, setShowModalId, onTaskUpdated }: Props) => {
+  const columnTasks = tasks.filter(task => task.columnPosition === columnPosition);
 
   return (
-    <div ref={setNodeRef} className='Cards'>
+    <div className='Cards'>
       {columnTasks.map(task => (
-        <DraggableCard key={task.id} task={task} setShowModalId={setShowModalId} />
+        <DraggableCard key={task.id} task={task} setShowModalId={setShowModalId} onTaskUpdated={onTaskUpdated} />
       ))}
     </div>
   );

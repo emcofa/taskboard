@@ -47,7 +47,7 @@ npm run dev
   "description": "Task description",
   "column_id": 1,
   "task_position": 1,
-  "due_date": "2024-01-15T10:00:00"
+  "due_date": "2024-01-15"
 }
 ```
 
@@ -60,7 +60,7 @@ npm run dev
   "description": "Updated description",
   "column_id": 2,
   "task_position": 2,
-  "due_date": "2024-01-20T10:00:00"
+  "due_date": "2024-01-20"
 }
 ```
 
