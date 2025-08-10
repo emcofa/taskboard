@@ -76,7 +76,7 @@ const DraggableCard = ({ task, setShowModalId, onTaskUpdated }: { task: Task; se
   };
 
   const daysLeft = calculateDaysLeft(task.dueDate);
-  const showDue = task.dueDate !== null && task.columnPosition !== 4;
+  const showDue = task.dueDate !== null && task.columnPosition !== 4 && task.columnPosition !== 5;
   const isDoneTask = task.columnPosition === 4;
 
   return (
