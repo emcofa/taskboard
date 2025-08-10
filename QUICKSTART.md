@@ -42,8 +42,7 @@ npm start
 ## Access Your App
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-- **API Health Check**: http://localhost:5000/health
+- **Backend API**: http://localhost:5001
 
 ## Common Issues
 
@@ -53,10 +52,10 @@ npm start
 
 ### Port Already in Use
 - Kill processes: `lsof -ti:3000 | xargs kill -9` (frontend)
-- Kill processes: `lsof -ti:5000 | xargs kill -9` (backend)
+- Kill processes: `lsof -ti:5001 | xargs kill -9` (backend)
 
 ### CORS Errors
-- Ensure backend is running on port 5000
+- Ensure backend is running on port 5001
 - Check that frontend is making requests to the right URL
 
 ## Next Steps

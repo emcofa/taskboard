@@ -33,7 +33,7 @@ DB_PASSWORD=your_mysql_password
 DB_NAME=taskboard
 
 # Server Configuration
-PORT=5000
+PORT=5001
 
 # Optional: Set to 'development' for more verbose logging
 NODE_ENV=development
@@ -62,6 +62,6 @@ echo ""
 echo "Next steps:"
 echo "1. Edit .env file with your MySQL password"
 echo "2. Run 'npm run dev' to start the development server"
-echo "3. The API will be available at http://localhost:5000"
+echo "3. The API will be available at http://localhost:5001"
 echo ""
 echo "Happy coding!" 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Taskboard Full Stack Setup Script
-echo "🚀 Setting up Taskboard Full Stack Application..."
+echo "Setting up Taskboard Application"
 
 # Colors for output
 RED='\033[0;31m'
@@ -126,17 +126,15 @@ echo ""
 echo -e "${GREEN} Setup completed successfully!${NC}"
 echo ""
 echo -e "${BLUE}Next steps:${NC}"
-echo "1. Edit ${YELLOW}api/.env${NC} file with your MySQL password"
-echo "2. Start the backend: ${YELLOW}cd api && npm run dev${NC}"
-echo "3. Start the frontend: ${YELLOW}cd client && npm start${NC}"
+echo "1. Edit api/.env file with your MySQL password"
+echo "2. Start the backend: cd api && npm run dev"
+echo "3. Start the frontend: cd client && npm start"
 echo ""
 echo -e "${BLUE}Access URLs:${NC}"
-echo "• Frontend: ${GREEN}http://localhost:3000${NC}"
-echo "• Backend API: ${GREEN}http://localhost:5000${NC}"
-echo "• API Health Check: ${GREEN}http://localhost:5000/health${NC}"
+echo "• Frontend: http://localhost:3000"
+echo "• Backend API: http://localhost:5000"
 echo ""
 echo -e "${BLUE}Quick start commands:${NC}"
-echo "• Backend: ${YELLOW}cd api && npm run dev${NC}"
-echo "• Frontend: ${YELLOW}cd client && npm start${NC}"
+echo "• Backend: cd api && npm run dev"
+echo "• Frontend: cd client && npm start"
 echo ""
-echo -e "${GREEN}Happy coding! ${NC}" 

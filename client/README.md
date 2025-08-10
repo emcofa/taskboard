@@ -6,7 +6,7 @@ A modern React application for the Taskboard project, featuring drag-and-drop fu
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- The backend API running on `http://localhost:5000`
+- The backend API running on `http://localhost:5001`
 
 ### Installation
 
@@ -110,7 +110,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## API Integration
 
-The frontend communicates with the backend API at `http://localhost:5000`. Key API functions are defined in `src/resources/api.ts`:
+The frontend communicates with the backend API at `http://localhost:5001`. Key API functions are defined in `src/resources/api.ts`:
 
 - `getTasks()` - Fetch all tasks
 - `createTask(task)` - Create a new task
