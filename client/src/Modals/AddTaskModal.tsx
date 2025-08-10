@@ -3,7 +3,7 @@ import './taskModal.scss'
 import { createTask } from '../resources/api';
 import { TaskColumn } from '../resources/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faX, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface AddTaskModalProps {
     columnPosition: number;
@@ -119,7 +119,7 @@ const AddTaskModal = ({ columnPosition, columns, onClose, onTaskCreated }: AddTa
                             rows={4}
                         />
                         <div className="due-date-input-container">
-                            <label htmlFor="dueDate">Due Date:</label>
+                            <label htmlFor="dueDate">Due Date</label>
                             <input
                                 type="date"
                                 id="dueDate"

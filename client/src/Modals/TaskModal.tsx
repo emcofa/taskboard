@@ -5,6 +5,7 @@ import { Task, TaskColumn } from '../resources/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX, faPenToSquare, faTrash, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip } from 'react-tooltip';
+import moment from 'moment';
 
 interface TaskModalProps {
     taskId: number;
@@ -225,7 +226,9 @@ const TaskModal = ({ taskId, columns, onClose, onDelete, onUpdate }: TaskModalPr
                         ) : (
                             <>
                                 <p>{task.description}</p>
-                                <p>Due Date: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : ''}</p>
+                                {task.dueDate ? (
+                                    <p><b>Due Date:</b> {moment(task.dueDate).format('YYYY-MM-DD')}</p>
+                                ) : null}
                             </>
                         )}
                     </div>

@@ -43,6 +43,23 @@ const truncateText = (text: string, maxLength: number): string => {
   return text.substring(0, maxLength) + '...';
 };
 
+const handleArchiveTask = async (
+  taskId: number, 
+  onTaskUpdated?: () => void,
+  event?: React.MouseEvent
+) => {
+  if (event) {
+    event.stopPropagation();
+  }
+  
+  try {
+    await updateTask(taskId, { columnPosition: 5 });
+    onTaskUpdated?.();
+  } catch (error) {
+    console.error('Failed to archive task:', error);
+  }
+};
+
 const DraggableCard = ({ task, setShowModalId, onTaskUpdated }: { task: Task; setShowModalId: (showModalId: number | null) => void; onTaskUpdated?: () => void }) => {
   const {
     attributes,
@@ -53,8 +70,9 @@ const DraggableCard = ({ task, setShowModalId, onTaskUpdated }: { task: Task; se
   } = useDraggable({ id: task.id.toString() });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
-    opacity: isDragging ? 0 : 1,
+    transform: isDragging ? undefined : CSS.Transform.toString(transform),
+    visibility: isDragging ? 'hidden' as const : 'visible' as const,
+    pointerEvents: isDragging ? 'none' as const : 'auto' as const,
   };
 
   const daysLeft = calculateDaysLeft(task.dueDate);
@@ -75,13 +93,7 @@ const DraggableCard = ({ task, setShowModalId, onTaskUpdated }: { task: Task; se
         {isDoneTask ?
           <div>
             <FontAwesomeIcon icon={faBoxArchive} color='grey' size='sm' data-tooltip-id='archive-tooltip' className='archive-icon' onClick={async (e) => {
-              e.stopPropagation();
-              try {
-                await updateTask(task.id, { columnPosition: 5 });
-                onTaskUpdated?.();
-              } catch (error) {
-                console.error('Failed to archive task:', error);
-              }
+              await handleArchiveTask(task.id, onTaskUpdated, e);
             }}
               data-tooltip-content='Archive task' />
             <Tooltip id='archive-tooltip' place='top' />

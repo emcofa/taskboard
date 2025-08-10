@@ -19,7 +19,7 @@ $spacing: 4px;
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  height: 100%;
+  min-height: 100%;
 
   .Column {
     background-color: $bg-column;

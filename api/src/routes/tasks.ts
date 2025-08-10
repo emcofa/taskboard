@@ -5,18 +5,15 @@ import { toCamelCase } from '../utils/toCamelCase';
 
 const router = express.Router();
 
-// Helper function to convert Date objects to ISO strings in task objects
 const convertTaskDates = (task: any) => {
   if (task.dueDate instanceof Date) {
-    task.dueDate = task.dueDate.toISOString().split('T')[0];
+    task.dueDate = task.dueDate?.toISOString().split('T')[0];
   }
   return task;
 };
 
-// Helper function to convert frontend date format (YYYY-MM-DD) to MySQL datetime format
 const convertFrontendDateToMySQL = (dateString: string | null): string | null => {
   if (!dateString) return null;
-  // If the date is already in YYYY-MM-DD format, convert it to MySQL datetime format
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
     return `${dateString} 00:00:00`;
   }
@@ -26,23 +23,7 @@ const convertFrontendDateToMySQL = (dateString: string | null): string | null =>
 // GET all tasks
 router.get('/', async (req: any, res: any) => {
   try {
-    const [tasks] = await db.promise().query<RowDataPacket[]>('SELECT * FROM task ORDER BY created DESC');
-    const camelCaseTasks = toCamelCase(tasks);
-    const tasksWithConvertedDates = camelCaseTasks.map(convertTaskDates);
-    res.json(tasksWithConvertedDates);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Database error' });
-  }
-});
-
-// GET tasks by column position
-router.get('/column/:columnPosition', async (req: any, res: any) => {
-  try {
-    const [tasks] = await db.promise().query<RowDataPacket[]>(
-      'SELECT * FROM task WHERE column_position = ? ORDER BY task_position ASC, created DESC',
-      [req.params.columnPosition]
-    );
+    const [tasks] = await db.promise().query<RowDataPacket[]>('SELECT * FROM task ORDER BY due_date ASC');
     const camelCaseTasks = toCamelCase(tasks);
     const tasksWithConvertedDates = camelCaseTasks.map(convertTaskDates);
     res.json(tasksWithConvertedDates);

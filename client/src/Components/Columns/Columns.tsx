@@ -80,7 +80,7 @@ const Columns = ({ setShowModalId, tasks, columns, onTaskCreated, onTaskUpdated 
 
   return (
     <div className='Columns'>
-      {columns.filter((column) => column.position !== 5 && !showArchiveColumn || showArchiveColumn && column.position === 5).map((column) => (
+      {columns.filter((column) => (column.position !== 5 && !showArchiveColumn) || (showArchiveColumn && column.position === 5)).map((column) => (
         <Column
           key={column.id}
           column={column}

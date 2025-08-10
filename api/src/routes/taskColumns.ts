@@ -32,7 +32,7 @@ router.get('/:id', async (req: any, res: any) => {
   }
 });
 
-// POST create new task column
+// POST create new task column (Not implenented in UI atm)
 router.post('/', async (req: any, res: any) => {
   try {
     const { name, description, position } = req.body;
@@ -41,7 +41,6 @@ router.post('/', async (req: any, res: any) => {
       return res.status(400).json({ error: 'Name is required' });
     }
 
-    // If position is not provided, get the next position
     let columnPosition = position;
     if (!columnPosition) {
       const [maxPosition] = await db.promise().query<RowDataPacket[]>('SELECT MAX(position) as max_pos FROM task_column');
@@ -62,7 +61,7 @@ router.post('/', async (req: any, res: any) => {
   }
 });
 
-// PUT update task column
+// PUT update task column (Not implenented in UI atm, useful when updatein directly from api)
 router.put('/:id', async (req: any, res: any) => {
   try {
     const { name, description, position } = req.body;
@@ -117,7 +116,6 @@ router.delete('/:id', async (req: any, res: any) => {
       return res.status(404).json({ error: 'Task column not found' });
     }
 
-    // Check if there are tasks in this column
     const [tasksInColumn] = await db.promise().query<RowDataPacket[]>('SELECT COUNT(*) as count FROM task WHERE column_position = ?', [existingColumn[0]?.position]);
     if (tasksInColumn[0]?.count > 0) {
       return res.status(400).json({ error: 'Cannot delete column with existing tasks' });

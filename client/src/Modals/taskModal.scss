@@ -7,34 +7,34 @@
   --modal-text-secondary: #555;
   --modal-text-muted: #666;
   --modal-hover-bg: #f5f5f5;
-  
+
   // Spacing
   --modal-padding-sm: 16px;
   --modal-padding-md: 20px;
   --modal-padding-lg: 24px;
   --modal-border-radius: 8px;
   --modal-border-radius-sm: 4px;
-  
+
   // Shadows
   --modal-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  
+
   // Typography
   --modal-font-size-lg: 1.5rem;
   --modal-font-size-xl: 24px;
   --modal-font-weight-semibold: 600;
   --modal-line-height: 1.5;
-  
+
   // Layout
   --modal-max-width: 500px;
   --modal-max-height: 80vh;
   --modal-z-index: 1000;
   --modal-blur: 2px;
-  
+
   // Animations
   --modal-animation-duration: 0.3s;
   --modal-animation-easing: ease-out;
   --modal-hover-transition: all 0.2s ease;
-  
+
   // Button dimensions
   --modal-button-size: 32px;
 }
@@ -69,6 +69,7 @@
     opacity: 0;
     transform: translateY(-50px) scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);

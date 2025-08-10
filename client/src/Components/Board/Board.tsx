@@ -77,7 +77,6 @@ const Board = () => {
       fetchData();
     } catch (error) {
       console.error('Failed to move task:', error);
-      // Revert the optimistic update on error
       fetchData();
     }
   };

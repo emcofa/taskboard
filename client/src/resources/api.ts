@@ -1,5 +1,7 @@
 import { Task, TaskColumn } from './types';
 
+
+//HARDCODED API URL, change to env variable if needed
 const API_BASE_URL = 'http://localhost:5001/api';
 
 export const fetchColumns = async (): Promise<TaskColumn[]> => {
